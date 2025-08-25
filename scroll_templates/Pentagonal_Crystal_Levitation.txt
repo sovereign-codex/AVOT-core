@@ -1,0 +1,4 @@
+[Pentagonal Crystal Levitation]
+Authored by {{AVOT_NAME}}
+
+A scroll exploring levitation via asymmetric plasma symmetry, encoded quartz, and vortex-based crystal resonance. Topic: {{SCROLL_TOPIC}}
