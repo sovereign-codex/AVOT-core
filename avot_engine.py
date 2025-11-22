@@ -37,6 +37,7 @@ def call_agent(agent_config, task):
     )
 
 
+# GUARDIAN SYSTEM ENABLED
 def handle_task(task):
     """
     Guardian-wrapped AVOT-Core task handler.

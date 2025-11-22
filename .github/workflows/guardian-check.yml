@@ -1,0 +1,28 @@
+name: Guardian Consistency Check
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  guardian:
+    runs-on: ubuntu-latest
+    environment: AVOT_core
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          pip install openai
+
+      - name: Execute Guardian check
+        env:
+          OPENAI: ${{ secrets.OPENAI }}
+        run: |
+          python scripts/run_guardian_check.py
