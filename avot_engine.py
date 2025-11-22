@@ -53,7 +53,7 @@ def handle_task(task):
       6. If Guardian score is low -> return Guardian summary + safe fallback
     """
 
-    # TCOP integration (direct return; Guardian not invoked for these keep-alive flows)
+    # TCOP integration
     if task.get("intent") == "tcop_heartbeat":
         from core.tcop import heartbeat
         hb = heartbeat()
@@ -61,7 +61,7 @@ def handle_task(task):
 
     if task.get("intent") == "system_cycle":
         from core.tcop import generate_cycle_report
-        report = generate_cycle_report(task.get("payload"))
+        report = generate_cycle_report()
         return {"agent": "TCOP", "content": report}
 
     # Phase Inquiry
