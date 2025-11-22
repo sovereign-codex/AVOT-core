@@ -1,0 +1,32 @@
+name: Convergence Reasoning Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  converge:
+    runs-on: ubuntu-latest
+    environment: AVOT_core
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Convergence Engine
+        env:
+          OPENAI: ${{ secrets.OPENAI }}
+        run: |
+          python - << 'EOF'
+          from convergence.engine import converge
+          demo = converge({
+            "task": {"intent": "synthesize", "payload": "Explain the relationship between coherence and memory."},
+            "agent_outputs": ["sample output"],
+            "archival_context": ["none"],
+            "guardian_context": {"coherence_score": 1.0}
+          })
+          print(demo)
+          EOF
