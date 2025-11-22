@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "types": {
+    "scroll": ["title", "path", "tags", "summary"],
+    "repo_file": ["path", "language", "summary"],
+    "decision_log": ["timestamp", "category", "content"],
+    "tip": ["id", "title", "status", "summary"]
+  }
+}

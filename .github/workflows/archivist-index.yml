@@ -1,0 +1,34 @@
+name: Archivist Index Update
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    environment: AVOT_core
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Archivist Indexer
+        run: |
+          python archivist/indexer.py
+
+      - name: Commit Index
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git config --global user.name "ArchivistBot"
+          git config --global user.email "archivist@si.system"
+          git add archivist/knowledge_index.json
+          git commit -m "Archivist: updated knowledge index" || echo "No changes"
+          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }} HEAD:main
