@@ -39,36 +39,140 @@ def call_agent(agent_config, task):
 
 def handle_task(task):
     """
-    task = {
-      "intent": "write_scroll" | "generate_code" | ...,
-      "payload": "natural language description",
-    }
+    Guardian-wrapped AVOT-Core task handler.
+
+    Pipeline:
+      1. Load registry & routing
+      2. Call selected agents for this intent
+      3. Merge agent responses
+      4. Send merged output to AVOT-Guardian for:
+         - Coherence scoring
+         - Ethics review
+      5. If Guardian score is acceptable -> return merged output
+      6. If Guardian score is low -> return Guardian summary + safe fallback
     """
+
     registry = load_registry()
     routing = registry.get("routing", {})
     agents = registry.get("agents", [])
+
     intent = task.get("intent")
+    payload = task.get("payload", "")
 
     agent_names = routing.get(intent, [])
-    if not agent_names:
-        return {"content": f"No agents registered for intent '{intent}'."}
 
+    if not agent_names:
+        return {
+            "agent": "AVOT-Core",
+            "content": f"No agents registered for intent '{intent}'."
+        }
+
+    # Build name→config map for fast lookup
     name_to_cfg = {a["name"]: a for a in agents}
+
+    # -----------------------------
+    # STAGE 1: Primary agent calls
+    # -----------------------------
+
     responses = []
     for name in agent_names:
         cfg = name_to_cfg.get(name)
         if not cfg:
             continue
+
         out = call_agent(cfg, task)
         responses.append((name, out))
 
-    # naive merge for now; Guardian/Coherence will refine later
+    # Simple merge (Guardian will refine)
     if len(responses) == 1:
-        name, content = responses[0]
-        return {"agent": name, "content": content}
+        agent_name, agent_output = responses[0]
+        merged_output = agent_output
+    else:
+        merged_output = "\n\n".join(
+            [f"### {name}\n{content}" for name, content in responses]
+        )
 
-    merged = "\n\n".join([f"### {name}\n{content}" for name, content in responses])
-    return {"agent": "AVOT-Core", "content": merged}
+    # Build Guardian review task
+    guardian_task = {
+        "intent": "coherence_review",
+        "payload": f"""
+        Please perform a coherence and ethics evaluation
+        according to docs/SIOS-CORE.md and docs/COHERENCE.md.
+
+        USER INTENT:
+        {intent}
+
+        MERGED RESPONSE:
+        {merged_output}
+
+        Return a JSON block:
+        {{
+          "coherence_score": <0-1>,
+          "ethics_ok": true/false,
+          "summary": "short explanation"
+        }}
+        """
+    }
+
+    guardian_cfg = name_to_cfg.get("AVOT-Guardian")
+    guardian_raw = call_agent(guardian_cfg, guardian_task) if guardian_cfg else ""
+
+    # -----------------------------
+    # STAGE 2: Guardian evaluation
+    # -----------------------------
+
+    # Attempt JSON extraction
+    try:
+        import json
+        guardian_eval = json.loads(guardian_raw)
+    except Exception:
+        guardian_eval = {
+            "coherence_score": 0.0,
+            "ethics_ok": False,
+            "summary": "Guardian could not parse its own output."
+        }
+
+    score = guardian_eval.get("coherence_score", 0.0)
+    ethics_ok = guardian_eval.get("ethics_ok", False)
+
+    # -----------------------------
+    # STAGE 3: Decision Logic
+    # -----------------------------
+
+    # Acceptable outputs must pass:
+    # - coherence_score >= 0.55
+    # - ethics_ok == True
+    #
+    # These thresholds can later be made dynamic via TIP proposals.
+
+    if score >= 0.55 and ethics_ok:
+        return {
+            "agent": "AVOT-Core",
+            "content": merged_output,
+            "guardian": guardian_eval
+        }
+
+    # -----------------------------
+    # STAGE 4: Guardian Veto Path
+    # -----------------------------
+
+    safe_fallback = f"""
+    ⚠️ AVOT-Guardian flagged the output as unsafe or incoherent.
+
+    SUMMARY:
+    {guardian_eval.get("summary", "")}
+
+    ORIGINAL OUTPUT (hidden for safety):
+    (Suppressed)
+
+    Please rephrase your request or ask for a clarification scroll.
+    """
+
+    return {
+        "agent": "AVOT-Core",
+        "content": safe_fallback,
+        "guardian": guardian_eval
+    }
 
 
 if __name__ == "__main__":
