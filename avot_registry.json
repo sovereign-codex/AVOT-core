@@ -26,12 +26,23 @@
       "temperature": 0.0,
       "max_tokens": 1200,
       "system_prompt": "<USE_FILE:prompts/guardian_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Archivist",
+      "role": "Indexing, memory retrieval, SI knowledge system",
+      "intents": ["index_knowledge", "retrieve_context"],
+      "model": "gpt-5.1",
+      "temperature": 0.0,
+      "max_tokens": 1500,
+      "system_prompt": "<USE_FILE:prompts/archivist_prompt.txt>"
     }
   ],
   "routing": {
     "write_scroll": ["AVOT-Quill"],
     "generate_code": ["AVOT-Fabricator"],
     "ethics_review": ["AVOT-Guardian"],
-    "coherence_review": ["AVOT-Guardian"]
+    "coherence_review": ["AVOT-Guardian"],
+    "index_knowledge": ["AVOT-Archivist"],
+    "retrieve_context": ["AVOT-Archivist"]
   }
 }
