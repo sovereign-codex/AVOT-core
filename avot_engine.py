@@ -8,7 +8,7 @@ enriched over time.
 """
 import json
 from pathlib import Path
-from clients.openai_client import run_chat_completion
+from core.openai_bridge import run_chat
 
 REGISTRY_PATH = Path(__file__).parent / "avot_registry.json"
 
@@ -29,7 +29,7 @@ def build_messages(agent_config, task):
 
 def call_agent(agent_config, task):
     messages = build_messages(agent_config, task)
-    return run_chat_completion(
+    return run_chat(
         model=agent_config["model"],
         messages=messages,
         temperature=agent_config.get("temperature", 0.2),
