@@ -35,6 +35,15 @@
       "temperature": 0.0,
       "max_tokens": 1500,
       "system_prompt": "<USE_FILE:prompts/archivist_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Fabricator",
+      "role": "Code generation, workflow creation, PR scaffolding",
+      "intents": ["generate_code", "propose_file", "modify_repo", "scaffold_repo"],
+      "model": "gpt-5.1",
+      "temperature": 0.12,
+      "max_tokens": 2000,
+      "system_prompt": "<USE_FILE:prompts/fabricator_prompt.txt>"
     }
   ],
   "routing": {
