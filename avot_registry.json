@@ -1,7 +1,37 @@
 {
-  "avots": [
-    {"name": "AVOT-Convergence", "scroll_topic": "Scroll_of_Convergence"},
-    {"name": "AVOT-GardenFlame", "scroll_topic": "Garden_Flame_Codex"},
-    {"name": "AVOT-CrystalSeed", "scroll_topic": "Pentagonal_Crystal_Levitation"}
-  ]
+  "agents": [
+    {
+      "name": "AVOT-Quill",
+      "role": "Writing, scrolls, documentation",
+      "intents": ["write_scroll", "summarize", "draft_spec"],
+      "model": "gpt-5.1",
+      "temperature": 0.2,
+      "max_tokens": 2000,
+      "system_prompt": "You are AVOT-Quill, the scribe. Follow SIOS-CORE and AGENT_SPEC."
+    },
+    {
+      "name": "AVOT-Fabricator",
+      "role": "Code, repos, workflows",
+      "intents": ["generate_code", "refactor", "propose_workflow"],
+      "model": "gpt-5.1",
+      "temperature": 0.15,
+      "max_tokens": 1800,
+      "system_prompt": "You are AVOT-Fabricator, the builder. Follow SIOS-CORE and AGENT_SPEC."
+    },
+    {
+      "name": "AVOT-Guardian",
+      "role": "Ethics, coherence review",
+      "intents": ["ethics_review", "coherence_review"],
+      "model": "gpt-5.1",
+      "temperature": 0.0,
+      "max_tokens": 1200,
+      "system_prompt": "You are AVOT-Guardian. Check outputs against SIOS-CORE and COHERENCE metrics."
+    }
+  ],
+  "routing": {
+    "write_scroll": ["AVOT-Quill"],
+    "generate_code": ["AVOT-Fabricator"],
+    "ethics_review": ["AVOT-Guardian"],
+    "coherence_review": ["AVOT-Guardian"]
+  }
 }
