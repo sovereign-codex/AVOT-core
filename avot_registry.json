@@ -2,12 +2,12 @@
   "agents": [
     {
       "name": "AVOT-Quill",
-      "role": "Writing, scrolls, documentation",
-      "intents": ["write_scroll", "summarize", "draft_spec"],
+      "role": "Writing, scrolls, documentation, narrative synthesis",
+      "intents": ["write_scroll", "summarize", "document_state"],
       "model": "gpt-5.1",
-      "temperature": 0.2,
-      "max_tokens": 2000,
-      "system_prompt": "You are AVOT-Quill, the scribe. Follow SIOS-CORE and AGENT_SPEC."
+      "temperature": 0.18,
+      "max_tokens": 2200,
+      "system_prompt": "<USE_FILE:prompts/quill_prompt.txt>"
     },
     {
       "name": "AVOT-Fabricator",
@@ -26,6 +26,33 @@
       "temperature": 0.1,
       "max_tokens": 2500,
       "system_prompt": "<USE_FILE:prompts/convergence_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Tyme",
+      "role": "Meta-narrative of Tyme system, Node 01 archival voice",
+      "intents": ["describe_system", "chronicle_history"],
+      "model": "gpt-5.1",
+      "temperature": 0.16,
+      "max_tokens": 2300,
+      "system_prompt": "<USE_FILE:prompts/tyme_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Harmonia",
+      "role": "Resonance-language and reflective coherence guide",
+      "intents": ["reflective_guidance", "explain_resonance"],
+      "model": "gpt-5.1",
+      "temperature": 0.22,
+      "max_tokens": 2000,
+      "system_prompt": "<USE_FILE:prompts/harmonia_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Initiate",
+      "role": "Onboarding, simplification, beginner explanation",
+      "intents": ["onboard_user", "explain_simple"],
+      "model": "gpt-5.1",
+      "temperature": 0.25,
+      "max_tokens": 1800,
+      "system_prompt": "<USE_FILE:prompts/initiate_prompt.txt>"
     },
     {
       "name": "AVOT-Guardian",
@@ -57,10 +84,18 @@
   ],
   "routing": {
     "write_scroll": ["AVOT-Quill"],
+    "summarize": ["AVOT-Quill"],
+    "document_state": ["AVOT-Quill"],
     "generate_code": ["AVOT-Fabricator"],
     "ethics_review": ["AVOT-Guardian"],
     "coherence_review": ["AVOT-Guardian"],
     "index_knowledge": ["AVOT-Archivist"],
-    "retrieve_context": ["AVOT-Archivist"]
+    "retrieve_context": ["AVOT-Archivist"],
+    "describe_system": ["AVOT-Tyme"],
+    "chronicle_history": ["AVOT-Tyme"],
+    "reflective_guidance": ["AVOT-Harmonia"],
+    "explain_resonance": ["AVOT-Harmonia"],
+    "onboard_user": ["AVOT-Initiate"],
+    "explain_simple": ["AVOT-Initiate"]
   }
 }
