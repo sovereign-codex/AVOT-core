@@ -1,89 +1,80 @@
-"""Generate scroll files for AVOT agents based on configured templates."""
+"""
+AVOT-Core Orchestrator Skeleton.
 
-import argparse
+This module is the entrypoint for Tyme's multi-agent routing.
+It loads avot_registry.json, selects agents by intent, calls the
+OpenAI client, and merges responses. Coherence/ethics will be
+enriched over time.
+"""
 import json
 from pathlib import Path
-from typing import Dict, Iterable, List
+from clients.openai_client import run_chat_completion
+
+REGISTRY_PATH = Path(__file__).parent / "avot_registry.json"
 
 
-def load_registry(registry_path: Path) -> List[Dict[str, str]]:
-    """Return AVOT entries from a registry JSON file."""
-    if not registry_path.exists():
-        raise FileNotFoundError(f"Registry file not found: {registry_path}")
-
-    with registry_path.open() as f:
-        registry = json.load(f)
-
-    avots: List[Dict[str, str]] = registry.get("avots", [])
-    if not isinstance(avots, list):
-        raise ValueError("Registry JSON must include an 'avots' list.")
-    return avots
+def load_registry():
+    with REGISTRY_PATH.open() as f:
+        return json.load(f)
 
 
-def render_scroll(template: str, avot: Dict[str, str]) -> str:
-    """Insert AVOT attributes into a template string."""
-    return (
-        template.replace("{{AVOT_NAME}}", avot.get("name", ""))
-        .replace("{{SCROLL_TOPIC}}", avot.get("scroll_topic", ""))
+def build_messages(agent_config, task):
+    system_msg = {"role": "system", "content": agent_config["system_prompt"]}
+    user_msg = {
+        "role": "user",
+        "content": task.get("payload", ""),
+    }
+    return [system_msg, user_msg]
+
+
+def call_agent(agent_config, task):
+    messages = build_messages(agent_config, task)
+    return run_chat_completion(
+        model=agent_config["model"],
+        messages=messages,
+        temperature=agent_config.get("temperature", 0.2),
+        max_tokens=agent_config.get("max_tokens", 1024),
     )
 
 
-def generate_scrolls(
-    avots: Iterable[Dict[str, str]], template_dir: Path, output_dir: Path
-) -> None:
-    """Write rendered scrolls for each AVOT using matching templates."""
-    output_dir.mkdir(exist_ok=True)
+def handle_task(task):
+    """
+    task = {
+      "intent": "write_scroll" | "generate_code" | ...,
+      "payload": "natural language description",
+    }
+    """
+    registry = load_registry()
+    routing = registry.get("routing", {})
+    agents = registry.get("agents", [])
+    intent = task.get("intent")
 
-    for avot in avots:
-        name = avot.get("name")
-        topic = avot.get("scroll_topic")
-        if not name or not topic:
-            print("Skipping entry missing 'name' or 'scroll_topic':", avot)
+    agent_names = routing.get(intent, [])
+    if not agent_names:
+        return {"content": f"No agents registered for intent '{intent}'."}
+
+    name_to_cfg = {a["name"]: a for a in agents}
+    responses = []
+    for name in agent_names:
+        cfg = name_to_cfg.get(name)
+        if not cfg:
             continue
+        out = call_agent(cfg, task)
+        responses.append((name, out))
 
-        template_path = template_dir / f"{topic}.txt"
-        if not template_path.exists():
-            print(f"Template not found for {topic}; skipping {name}.")
-            continue
+    # naive merge for now; Guardian/Coherence will refine later
+    if len(responses) == 1:
+        name, content = responses[0]
+        return {"agent": name, "content": content}
 
-        template = template_path.read_text()
-        scroll_content = render_scroll(template, avot)
-
-        output_path = output_dir / f"{name}_{topic}_scroll.txt"
-        output_path.write_text(scroll_content)
-        print(f"Generated scroll for {name} at {output_path}")
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Render scrolls for AVOT registry entries using templates."
-    )
-    parser.add_argument(
-        "--registry",
-        type=Path,
-        default=Path("avot_registry.json"),
-        help="Path to the AVOT registry JSON file.",
-    )
-    parser.add_argument(
-        "--templates",
-        type=Path,
-        default=Path("scroll_templates"),
-        help="Directory containing scroll templates.",
-    )
-    parser.add_argument(
-        "--output",
-        type=Path,
-        default=Path("generated_scrolls"),
-        help="Directory to write generated scrolls to.",
-    )
-    return parser.parse_args()
-
-
-def main() -> None:
-    args = parse_args()
-    avots = load_registry(args.registry)
-    generate_scrolls(avots, args.templates, args.output)
+    merged = "\n\n".join([f"### {name}\n{content}" for name, content in responses])
+    return {"agent": "AVOT-Core", "content": merged}
 
 
 if __name__ == "__main__":
-    main()
+    demo_task = {
+        "intent": "write_scroll",
+        "payload": "Describe the purpose of AVOT-Core in 3 short paragraphs.",
+    }
+    result = handle_task(demo_task)
+    print(result["content"])
