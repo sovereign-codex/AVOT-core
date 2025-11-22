@@ -53,6 +53,28 @@ def handle_task(task):
       6. If Guardian score is low -> return Guardian summary + safe fallback
     """
 
+    # Phase Inquiry
+    if task.get("intent") == "seek_next_phase":
+        from core.system_snapshot import generate_snapshot
+        snapshot = generate_snapshot()
+
+        # Prepare convergence inquiry
+        from convergence.engine import prepare_phase_inquiry, converge
+        inquiry = prepare_phase_inquiry(snapshot)
+
+        upstream = converge({
+            "task": {"intent": "synthesize", "payload": inquiry},
+            "agent_outputs": [],
+            "archival_context": [],
+            "guardian_context": {"coherence_score": 1.0}
+        })
+
+        return {
+            "agent": "AVOT-Core",
+            "phase_inquiry": True,
+            "content": upstream
+        }
+
     registry = load_registry()
     routing = registry.get("routing", {})
     agents = registry.get("agents", [])

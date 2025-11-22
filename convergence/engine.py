@@ -39,3 +39,10 @@ def converge(inputs):
         return json.loads(raw)
     except:
         return {"synthesis": raw}
+
+
+# Phase Inquiry helper
+def prepare_phase_inquiry(snapshot):
+    prompt_path = Path(__file__).resolve().parents[1] / "prompts" / "phase_inquiry_prompt.txt"
+    template = prompt_path.read_text()
+    return template + "\n\nSYSTEM SNAPSHOT:\n" + json.dumps(snapshot, indent=2)

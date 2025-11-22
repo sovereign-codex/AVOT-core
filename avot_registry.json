@@ -83,6 +83,7 @@
     }
   ],
   "routing": {
+    "seek_next_phase": ["AVOT-Convergence", "AVOT-Guardian", "AVOT-Tyme"],
     "write_scroll": ["AVOT-Quill"],
     "summarize": ["AVOT-Quill"],
     "document_state": ["AVOT-Quill"],
