@@ -13,7 +13,7 @@ from datetime import datetime
 from pathlib import Path
 
 from core.system_snapshot import generate_snapshot
-from clients.openai_client import run_chat_completion
+from core.openai_bridge import run_chat
 
 PROMPT_PATH = Path(__file__).resolve().parents[1] / "prompts" / "tcop_prompt.txt"
 
@@ -35,7 +35,7 @@ def generate_cycle_report():
         {"role": "user", "content": json.dumps(payload)}
     ]
 
-    raw = run_chat_completion(
+    raw = run_chat(
         model="gpt-5.1",
         messages=messages,
         temperature=0.15,
