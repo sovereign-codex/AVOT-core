@@ -2,31 +2,71 @@ name: Convergence Reasoning Test
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "convergence/**"
+      - ".github/workflows/convergence.yml"
+      - "clients/**"
+      - "core/**"
 
 jobs:
   converge:
     runs-on: ubuntu-latest
-    environment: AVOT_core
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - name: Run Convergence Engine
-        env:
-          OPENAI: ${{ secrets.OPENAI }}
+      - name: Install AVOT-Core dependencies
         run: |
-          python - << 'EOF'
+          python -m pip install --upgrade pip
+          pip install --upgrade openai
+          pip install -r requirements.txt || true
+
+      - name: Preload Guardian + Registry
+        run: |
+          python << 'EOF2'
+          from core.registry import load_registry
+          from core.guardian import guardian_eval
+          print("📘 Loading AVOT Registry...")
+          reg = load_registry()
+          print("📘 Agents discovered:", list(reg.keys()))
+
+          print("🛡️ Performing Guardian Pre-Eval...")
+          try:
+              out = guardian_eval({"test": "ping"})
+              print("🛡️ Guardian response:", out)
+          except Exception as e:
+              print("⚠️ Guardian pre-eval failed:", e)
+          EOF2
+
+      - name: Run Convergence Engine
+        run: |
+          python << 'EOF3'
           from convergence.engine import converge
-          demo = converge({
-            "task": {"intent": "synthesize", "payload": "Explain the relationship between coherence and memory."},
-            "agent_outputs": ["sample output"],
-            "archival_context": ["none"],
-            "guardian_context": {"coherence_score": 1.0}
-          })
-          print(demo)
-          EOF
+
+          print("🔮 Starting Convergence Reasoning Engine…")
+          try:
+              result = converge()
+              print("🧠 Convergence Output:", result)
+          except Exception as e:
+              print("❌ Convergence Engine Error:", e)
+              raise
+          EOF3
+
+      - name: Save Convergence Report
+        if: success()
+        run: |
+          echo "Convergence executed successfully." > convergence_report.txt
+
+      - name: Upload Artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: convergence-report
+          path: convergence_report.txt
