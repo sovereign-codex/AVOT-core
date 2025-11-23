@@ -55,6 +55,16 @@ Each AVOT is linked to a unique scroll set and can be forked, customized, and de
 
 —
 
+## 🔐 Secret Verification
+
+Validate that required GitHub and OpenAI credentials are available and functional:
+
+```bash
+scripts/verify_secrets.sh
+```
+
+The script checks for `GH_PAT` and `OPENAI`/`OPENAI_API_KEY` environment variables, confirms GitHub API access, and exercises a lightweight OpenAI response request. Ensure the [`openai`](https://pypi.org/project/openai/) Python package is installed before running.
+
 ## 🌐 AVOT Deployment Options
 
 - **GitHub Pages** – for publishing scrolls & interfaces
