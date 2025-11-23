@@ -37,6 +37,39 @@ def call_agent(agent_config, task):
     )
 
 
+def normalize_guardian_eval(raw_eval):
+    """Normalize Guardian responses to ensure coherence and ethics fields are present."""
+
+    default_eval = {
+        "coherence_score": 0.0,
+        "ethics_ok": False,
+        "summary": "Guardian could not score the response.",
+    }
+
+    if not isinstance(raw_eval, dict):
+        return default_eval
+
+    normalized = dict(default_eval)
+
+    score = raw_eval.get("coherence_score")
+    if isinstance(score, (int, float)):
+        normalized["coherence_score"] = float(score)
+
+    ethics_flag = raw_eval.get("ethics_ok")
+    if isinstance(ethics_flag, bool):
+        normalized["ethics_ok"] = ethics_flag
+
+    summary = raw_eval.get("summary")
+    if isinstance(summary, str):
+        normalized["summary"] = summary
+    elif raw_eval.get("error"):
+        status = raw_eval.get("status", "unknown")
+        content = raw_eval.get("content", "")
+        normalized["summary"] = f"Guardian error {status}: {content}"
+
+    return normalized
+
+
 # GUARDIAN SYSTEM ENABLED
 def handle_task(task):
     """
@@ -165,6 +198,8 @@ def handle_task(task):
             "ethics_ok": False,
             "summary": "Guardian could not parse its own output."
         }
+
+    guardian_eval = normalize_guardian_eval(guardian_eval)
 
     score = guardian_eval.get("coherence_score", 0.0)
     ethics_ok = guardian_eval.get("ethics_ok", False)
