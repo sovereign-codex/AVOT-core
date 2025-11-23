@@ -1,26 +1,38 @@
-name: TCOP Heartbeat
+name: TCOP heartbeat
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 9 * * *"  # daily at 09:00 UTC
+    - cron: "0 * * * *" # hourly heartbeat
 
 jobs:
   heartbeat:
     runs-on: ubuntu-latest
-    environment: AVOT_core
+    env:
+      GH_PAT: ${{ secrets.GH_PAT }}
+      OPENAI_API_KEY: ${{ secrets.OpenAI }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Run TCOP cycle
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
-          OPENAI_API_KEY: ${{ secrets.OpenAI || secrets.OPENAI }}
+      - name: Install dependencies (OpenAI SDK)
         run: |
-          python core/tcop.py
+          python -m pip install --upgrade pip
+          pip install --upgrade openai
+
+      - name: Run TCOP heartbeat
+        run: |
+          export PYTHONPATH="$PYTHONPATH:${GITHUB_WORKSPACE}"
+          python - <<'PY'
+          from core.tcop import heartbeat
+          print("💓 Sending TCOP heartbeat...")
+          result = heartbeat()
+          print("💓 TCOP heartbeat result:")
+          print(result)
+          PY
