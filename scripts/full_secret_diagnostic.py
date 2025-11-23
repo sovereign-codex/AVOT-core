@@ -16,8 +16,15 @@ import importlib.util
 import json
 import os
 import sys
+from pathlib import Path
 import urllib.request as _req
 from typing import Any, Dict
+
+
+# Ensure repository root is on sys.path for imports (e.g., core.tcop)
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 
 def _env_snapshot(name: str) -> Dict[str, Any]:
