@@ -55,15 +55,26 @@ Each AVOT is linked to a unique scroll set and can be forked, customized, and de
 
 —
 
-## 🔐 Secret Verification
+## 🔐 Secret verification & diagnostics
 
-Validate that required GitHub and OpenAI credentials are available and functional:
+AVOT-core includes two helper layers for validating connectivity and secrets:
+
+1. `scripts/verify_secrets.sh` — quick sanity check for required environment
+   variables (e.g., `GH_PAT`, `OPENAI` / `OpenAI`).
+2. `scripts/full_secret_diagnostic.py` — deep diagnostic used by CI to:
+   - query the GitHub API with `GH_PAT`
+   - exercise the OpenAI API using the configured key
+   - load and inspect `avot_registry.json`
+   - call `core.tcop.heartbeat()` to ensure TCOP wiring is intact
+
+To run locally (e.g., in the Codex AVOT-core environment):
 
 ```bash
-scripts/verify_secrets.sh
+python scripts/full_secret_diagnostic.py
 ```
 
-The script checks for `GH_PAT` and `OPENAI`/`OPENAI_API_KEY` environment variables, confirms GitHub API access, and exercises a lightweight OpenAI response request. Ensure the [`openai`](https://pypi.org/project/openai/) Python package is installed before running.
+This prints a JSON document summarizing the checks and an overall `summary.ok`
+field you can use for quick pass/fail evaluation.
 
 ## 🌐 AVOT Deployment Options
 
