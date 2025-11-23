@@ -1,28 +1,31 @@
-name: Guardian Consistency Check
+name: Guardian coherence check
 
 on:
-  workflow_dispatch:
   pull_request:
+    branches: [ "main" ]
 
 jobs:
-  guardian:
+  guardian-check:
     runs-on: ubuntu-latest
-    environment: AVOT_core
+    env:
+      GH_PAT: ${{ secrets.GH_PAT }}
+      OPENAI_API_KEY: ${{ secrets.OpenAI }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install deps
+      - name: Install dependencies (OpenAI SDK)
         run: |
-          pip install openai
+          python -m pip install --upgrade pip
+          pip install --upgrade openai
 
-      - name: Execute Guardian check
-        env:
-          OPENAI: ${{ secrets.OPENAI }}
+      - name: Run Guardian coherence check
         run: |
+          export PYTHONPATH="$PYTHONPATH:${GITHUB_WORKSPACE}"
           python scripts/run_guardian_check.py
