@@ -20,6 +20,7 @@ jobs:
 
       - name: Run TCOP cycle
         env:
-          OPENAI: ${{ secrets.OPENAI }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+          OPENAI_API_KEY: ${{ secrets.OpenAI || secrets.OPENAI }}
         run: |
           python core/tcop.py
