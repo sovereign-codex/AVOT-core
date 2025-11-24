@@ -1,0 +1,17 @@
+{
+  "id": "CMS.UNIFIED-SYNC",
+  "file": "CMS-unified-sync.json",
+  "title": "Unified Multi-Repo Sync",
+  "description": "Generates content through the AVOT lattice and synchronizes output across multiple repositories using UMX routing.",
+  "category": "multi-repo",
+  "enabled": true,
+  "handler": "scripts/cms_unified_sync.py",
+  "permissions": {
+    "requires_guardian": true,
+    "requires_fabricator": true,
+    "requires_archivist": true
+  },
+  "routing": {
+    "default_targets": ["AVOT-core", "Hall-of-Tyme"]
+  }
+}
