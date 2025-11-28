@@ -6,6 +6,7 @@ AVOT-core is the Agent Forge for the Sovereign Intelligence lattice. It tracks t
 - `AVOT-core/` — manifests, registry, and playbooks for every AVOT tracked by the forge.
 - `python/` — the `avot_core` Python package for reading manifests, querying agents, and stubbing runtime execution.
 - `scripts/avot_cli.py` — a convenience CLI to list, inspect, and simulate AVOTs locally.
+- `docs/SOVEREIGN-ARCHITECTURE.md` — the v0.2 reference for how Sovereign Intelligence layers connect through AVOT-core.
 
 ## Install the Python package
 From the repository root:
