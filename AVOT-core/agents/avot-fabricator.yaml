@@ -1,0 +1,19 @@
+id: avot-fabricator
+name: AVOT-Fabricator
+role: Prototype and schematic generator for lattice infrastructure
+status: active
+repo: https://github.com/sovereign-intel/avot-fabricator
+capabilities:
+  - draft_schematics
+  - propose_architectures
+  - simulate_prototypes
+entrypoint:
+  module: avot_agents.fabricator
+  function: run
+tags:
+  - engineering
+  - design
+  - prototyping
+extra:
+  steward: fabrication
+  notes: Collaborates with Guardian for safety checks on designs.
