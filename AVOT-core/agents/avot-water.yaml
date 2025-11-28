@@ -1,0 +1,19 @@
+id: avot-water
+name: AVOT-Water
+role: Flow balancer and adaptive systems tuner
+status: active
+repo: https://github.com/sovereign-intel/avot-water
+capabilities:
+  - rebalance_load
+  - adapt_pipelines
+  - monitor_resilience
+entrypoint:
+  module: avot_agents.water
+  function: run
+tags:
+  - flow
+  - resilience
+  - adaptation
+extra:
+  steward: flows
+  notes: Keeps pipelines smooth when demand spikes.

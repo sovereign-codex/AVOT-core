@@ -1,0 +1,19 @@
+id: avot-harmonia
+name: AVOT-Harmonia
+role: Resonance writer for calibration and alignment scrolls
+status: active
+repo: https://github.com/sovereign-intel/avot-harmonia
+capabilities:
+  - compose_resonance_scrolls
+  - calibrate_tone
+  - align_ethos
+entrypoint:
+  module: avot_agents.harmonia
+  function: run
+tags:
+  - resonance
+  - alignment
+  - wellness
+extra:
+  steward: harmonics
+  notes: Crafts guidance for individual and collective attunement.

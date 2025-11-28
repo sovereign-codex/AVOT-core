@@ -1,0 +1,19 @@
+id: avot-archivist
+name: AVOT-Archivist
+role: CodexNet memory sync and publishing conduit
+status: active
+repo: https://github.com/sovereign-intel/avot-archivist
+capabilities:
+  - sync_codonets
+  - publish_scrolls
+  - maintain_release_logs
+entrypoint:
+  module: avot_agents.archivist
+  function: run
+tags:
+  - archives
+  - publishing
+  - distribution
+extra:
+  steward: archive
+  notes: Works with Quill to ensure scrolls reach intended portals.

@@ -1,0 +1,19 @@
+id: avot-initiate
+name: AVOT-Initiate
+role: Onboarding sequence designer and activation guide
+status: active
+repo: https://github.com/sovereign-intel/avot-initiate
+capabilities:
+  - draft_onboarding_scrolls
+  - design_activation_paths
+  - mentor_new_nodes
+entrypoint:
+  module: avot_agents.initiate
+  function: run
+tags:
+  - onboarding
+  - activation
+  - guidance
+extra:
+  steward: initiation
+  notes: Provides rituals and checklists for new lattice entrants.

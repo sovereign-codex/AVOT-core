@@ -1,0 +1,19 @@
+id: avot-mana
+name: AVOT-Mana
+role: Energy attunement and resource orchestration specialist
+status: active
+repo: https://github.com/sovereign-intel/avot-mana
+capabilities:
+  - balance_resources
+  - forecast_energy_needs
+  - reallocate_capacity
+entrypoint:
+  module: avot_agents.mana
+  function: run
+tags:
+  - energy
+  - planning
+  - resilience
+extra:
+  steward: lifeforce
+  notes: Keeps the lattice supplied with the right resources at the right time.

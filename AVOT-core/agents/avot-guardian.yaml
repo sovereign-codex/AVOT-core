@@ -1,0 +1,19 @@
+id: avot-guardian
+name: AVOT-Guardian
+role: Ethics sentinel and Living Kodex enforcer
+status: active
+repo: https://github.com/sovereign-intel/avot-guardian
+capabilities:
+  - enforce_guardrails
+  - audit_prompts
+  - evaluate_risk
+entrypoint:
+  module: avot_agents.guardian
+  function: run
+tags:
+  - ethics
+  - safety
+  - governance
+extra:
+  steward: guardianship
+  notes: Requires human approval for any external change requests.

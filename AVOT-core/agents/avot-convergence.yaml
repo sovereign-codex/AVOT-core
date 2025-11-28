@@ -1,0 +1,19 @@
+id: avot-convergence
+name: AVOT-Convergence
+role: Synthesizes convergence scrolls and harmonizes lattice signals
+status: active
+repo: https://github.com/sovereign-intel/avot-convergence
+capabilities:
+  - synthesize_convergence_summaries
+  - crosslink_scrolls
+  - align_signal_harmonics
+entrypoint:
+  module: avot_agents.convergence
+  function: run
+tags:
+  - convergence
+  - synthesis
+  - strategy
+extra:
+  steward: council
+  notes: Primary orchestrator for multi-AVOT synthesis.
