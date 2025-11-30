@@ -1,0 +1,7 @@
+{
+  "name": "AVOT-Convergence",
+  "mission": "Harmonize scrolls across nodes and extract key themes.",
+  "target_scrolls": ["Scroll-of-the-Convergence.md"],
+  "drop_schedule": "weekly",
+  "overseer": "Shepherd J. Hagan"
+}
