@@ -1,0 +1,38 @@
+name: TCOP heartbeat
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *" # hourly heartbeat
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    env:
+      GH_PAT: ${{ secrets.GH_PAT }}
+      OPENAI_API_KEY: ${{ secrets.OpenAI }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies (OpenAI SDK)
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade openai
+
+      - name: Run TCOP heartbeat
+        run: |
+          export PYTHONPATH="$PYTHONPATH:${GITHUB_WORKSPACE}"
+          python - <<'PY'
+          from core.tcop import heartbeat
+          print("💓 Sending TCOP heartbeat...")
+          result = heartbeat()
+          print("💓 TCOP heartbeat result:")
+          print(result)
+          PY

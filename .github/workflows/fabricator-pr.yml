@@ -1,0 +1,29 @@
+name: Fabricator Pull Request Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-pr:
+    runs-on: ubuntu-latest
+    environment: AVOT_core
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate changeset (placeholder)
+        run: echo "Fabricator PR initiated"
+
+      - name: Commit & Open PR
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git checkout -b fabricator-update
+          git commit --allow-empty -m "Fabricator: PR scaffold"
+          git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }} fabricator-update
+          gh pr create --title "Fabricator Update" --body "Automated Fabricator PR"

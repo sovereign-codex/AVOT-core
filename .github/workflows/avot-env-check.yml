@@ -1,0 +1,14 @@
+name: AVOT Environment Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    environment: AVOT_core
+
+    steps:
+      - name: Verify Environment Secrets
+        run: |
+          echo "Environment is active."

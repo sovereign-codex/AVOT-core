@@ -1,0 +1,19 @@
+id: avot-quill
+name: AVOT-Quill
+role: Chronicle scribe for lattice discoveries
+status: active
+repo: https://github.com/sovereign-intel/avot-quill
+capabilities:
+  - draft_scrolls
+  - record_experiments
+  - polish_language
+entrypoint:
+  module: avot_agents.quill
+  function: run
+tags:
+  - writing
+  - publishing
+  - storytelling
+extra:
+  steward: records
+  notes: Works closely with Archivist to publish scrolls.

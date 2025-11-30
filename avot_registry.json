@@ -1,7 +1,104 @@
 {
-  "avots": [
-    {"name": "AVOT-Convergence", "scroll_topic": "Scroll_of_Convergence"},
-    {"name": "AVOT-GardenFlame", "scroll_topic": "Garden_Flame_Codex"},
-    {"name": "AVOT-CrystalSeed", "scroll_topic": "Pentagonal_Crystal_Levitation"}
-  ]
+  "agents": [
+    {
+      "name": "AVOT-Quill",
+      "role": "Writing, scrolls, documentation, narrative synthesis",
+      "intents": ["write_scroll", "summarize", "document_state"],
+      "model": "gpt-5.1",
+      "temperature": 0.18,
+      "max_tokens": 2200,
+      "system_prompt": "<USE_FILE:prompts/quill_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Fabricator",
+      "role": "Code, repos, workflows",
+      "intents": ["generate_code", "refactor", "propose_workflow"],
+      "model": "gpt-5.1",
+      "temperature": 0.15,
+      "max_tokens": 1800,
+      "system_prompt": "You are AVOT-Fabricator, the builder. Follow SIOS-CORE and AGENT_SPEC."
+    },
+    {
+      "name": "AVOT-Convergence",
+      "role": "Deep synthesis, multi-agent integration, reasoning",
+      "intents": ["synthesize", "harmonize", "cross_reference"],
+      "model": "gpt-5.1",
+      "temperature": 0.1,
+      "max_tokens": 2500,
+      "system_prompt": "<USE_FILE:prompts/convergence_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Tyme",
+      "role": "Meta-narrative of Tyme system, Node 01 archival voice",
+      "intents": ["describe_system", "chronicle_history"],
+      "model": "gpt-5.1",
+      "temperature": 0.16,
+      "max_tokens": 2300,
+      "system_prompt": "<USE_FILE:prompts/tyme_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Harmonia",
+      "role": "Resonance-language and reflective coherence guide",
+      "intents": ["reflective_guidance", "explain_resonance"],
+      "model": "gpt-5.1",
+      "temperature": 0.22,
+      "max_tokens": 2000,
+      "system_prompt": "<USE_FILE:prompts/harmonia_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Initiate",
+      "role": "Onboarding, simplification, beginner explanation",
+      "intents": ["onboard_user", "explain_simple"],
+      "model": "gpt-5.1",
+      "temperature": 0.25,
+      "max_tokens": 1800,
+      "system_prompt": "<USE_FILE:prompts/initiate_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Guardian",
+      "role": "Ethics, coherence review",
+      "intents": ["ethics_review", "coherence_review"],
+      "model": "gpt-5.1",
+      "temperature": 0.0,
+      "max_tokens": 1200,
+      "system_prompt": "<USE_FILE:prompts/guardian_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Archivist",
+      "role": "Indexing, memory retrieval, SI knowledge system",
+      "intents": ["index_knowledge", "retrieve_context"],
+      "model": "gpt-5.1",
+      "temperature": 0.0,
+      "max_tokens": 1500,
+      "system_prompt": "<USE_FILE:prompts/archivist_prompt.txt>"
+    },
+    {
+      "name": "AVOT-Fabricator",
+      "role": "Code generation, workflow creation, PR scaffolding",
+      "intents": ["generate_code", "propose_file", "modify_repo", "scaffold_repo"],
+      "model": "gpt-5.1",
+      "temperature": 0.12,
+      "max_tokens": 2000,
+      "system_prompt": "<USE_FILE:prompts/fabricator_prompt.txt>"
+    }
+  ],
+  "routing": {
+    "system_cycle": ["AVOT-Convergence", "AVOT-Guardian", "AVOT-Tyme"],
+    "tcop_heartbeat": ["AVOT-Guardian"],
+    "seek_next_phase": ["AVOT-Convergence", "AVOT-Guardian", "AVOT-Tyme"],
+    "write_scroll": ["AVOT-Quill"],
+    "summarize": ["AVOT-Quill"],
+    "document_state": ["AVOT-Quill"],
+    "generate_code": ["AVOT-Fabricator"],
+    "ethics_review": ["AVOT-Guardian"],
+    "coherence_review": ["AVOT-Guardian"],
+    "index_knowledge": ["AVOT-Archivist"],
+    "retrieve_context": ["AVOT-Archivist"],
+    "describe_system": ["AVOT-Tyme"],
+    "chronicle_history": ["AVOT-Tyme"],
+    "reflective_guidance": ["AVOT-Harmonia"],
+    "explain_resonance": ["AVOT-Harmonia"],
+    "onboard_user": ["AVOT-Initiate"],
+    "explain_simple": ["AVOT-Initiate"]
+  }
 }

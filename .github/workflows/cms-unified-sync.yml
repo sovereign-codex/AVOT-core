@@ -1,0 +1,133 @@
+name: CMS unified multi-repo sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: "High-level description of what to generate"
+        required: true
+        type: string
+      type:
+        description: "scroll | diagram | schema | manifest | ui | code"
+        required: false
+        default: "scroll"
+        type: string
+      targets:
+        description: "Override UMX routing (optional comma-separated list)"
+        required: false
+        type: string
+      mode:
+        description: "create | update | sync-only"
+        required: false
+        default: "create"
+        type: string
+
+jobs:
+  unified-sync:
+    runs-on: ubuntu-latest
+
+    env:
+      GH_PAT: ${{ secrets.GH_PAT }}
+      OPENAI_API_KEY: ${{ secrets.OpenAI }}
+
+    steps:
+
+      # 1. Checkout AVOT-core
+      - name: Checkout AVOT-core
+        uses: actions/checkout@v4
+
+      # 2. Setup Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # 3. Install Dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install --upgrade openai
+          fi
+
+      # 4. Run Unified Sync Orchestrator
+      - name: Run CMS.UNIFIED-SYNC orchestration
+        run: |
+          mkdir -p artifacts
+          python scripts/cms_unified_sync.py \
+            --task "${{ github.event.inputs.task }}" \
+            --type "${{ github.event.inputs.type }}" \
+            --targets "${{ github.event.inputs.targets }}" \
+            --mode "${{ github.event.inputs.mode }}"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OpenAI }}
+
+      # 5. Show plan for debug
+      - name: Display Unified Sync plan
+        run: |
+          echo "=== artifacts/unified_sync_plan.json ==="
+          cat artifacts/unified_sync_plan.json || echo "No plan created"
+
+      # 6. Commit AVOT-core updates
+      - name: Commit AVOT-core changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes in AVOT-core."
+            exit 0
+          fi
+
+          git config user.name "AVOT-Core Bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add .
+          git commit -m "CMS.UNIFIED-SYNC: Update AVOT-core"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+      # 7. Check for Hall-of-Tyme artifacts
+      - name: Check for Hall-of-Tyme artifacts
+        id: hallcheck
+        run: |
+          if compgen -G "artifacts/Hall-of-Tyme/**/*" > /dev/null; then
+            echo "found=true" >> $GITHUB_OUTPUT
+          else
+            echo "found=false" >> $GITHUB_OUTPUT
+          fi
+
+      # 8. Checkout Hall-of-Tyme if needed
+      - name: Checkout Hall-of-Tyme
+        if: ${{ steps.hallcheck.outputs.found == 'true' }}
+        uses: actions/checkout@v4
+        with:
+          repository: sovereign-codex/Hall-of-Tyme
+          token: ${{ secrets.GH_PAT }}
+          path: hall-of-tyme
+
+      # 9. Apply Hall-of-Tyme artifact changes
+      - name: Apply artifacts to Hall-of-Tyme
+        if: ${{ steps.hallcheck.outputs.found == 'true' }}
+        run: |
+          rsync -av --mkdir artifacts/Hall-of-Tyme/ hall-of-tyme/
+
+          cd hall-of-tyme
+          if git diff --quiet; then
+            echo "No Hall-of-Tyme changes."
+            exit 0
+          fi
+
+          git config user.name "AVOT-Core Bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add .
+          git commit -m "CMS.UNIFIED-SYNC: sync from AVOT-core"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+      # 10. Upload artifacts (Optional)
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: unified-sync-artifacts
+          path: artifacts

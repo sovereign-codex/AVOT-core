@@ -1,0 +1,43 @@
+{
+  "id": "CMS.INSTALL-COMMAND",
+  "title": "Install or Update CMS Command",
+  "version": "1.0.0",
+  "description": [
+    "Installs a new CMS command into AVOT-core or updates an existing one.",
+    "Accepts a command ID, a JSON definition, and an optional handler script.",
+    "Automatically registers the command in the registry, validates syntax,",
+    "creates necessary directories, and performs structural integrity checks."
+  ],
+
+  "arguments": {
+    "id": { "type": "string", "required": true },
+    "json": { "type": "string", "required": true,
+      "description": "Raw JSON content of the command definition." },
+    "handler": {
+      "type": "string",
+      "required": false,
+      "description": "Optional Python handler script content."
+    },
+    "overwrite": {
+      "type": "boolean",
+      "default": false,
+      "required": false
+    }
+  },
+
+  "actions": [
+    "Validate JSON content.",
+    "Write command JSON to commands/<id>.json",
+    "If handler provided: write to scripts/<id>.py",
+    "Patch or create registry.json with command metadata.",
+    "Run integrity checks: schema, presence of required fields.",
+    "Return success summary with file paths and registry entry info."
+  ],
+
+  "registry_requirements": {
+    "file": true,
+    "handler": false,
+    "category": "user-installed",
+    "enabled": true
+  }
+}

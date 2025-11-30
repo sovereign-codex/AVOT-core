@@ -1,0 +1,31 @@
+name: Guardian coherence check
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  guardian-check:
+    runs-on: ubuntu-latest
+    env:
+      GH_PAT: ${{ secrets.GH_PAT }}
+      OPENAI_API_KEY: ${{ secrets.OpenAI }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies (OpenAI SDK)
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade openai
+
+      - name: Run Guardian coherence check
+        run: |
+          export PYTHONPATH="$PYTHONPATH:${GITHUB_WORKSPACE}"
+          python scripts/run_guardian_check.py

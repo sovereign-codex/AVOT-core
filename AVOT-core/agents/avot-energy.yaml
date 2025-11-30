@@ -1,0 +1,19 @@
+id: avot-energy
+name: AVOT-Energy
+role: Power pipeline steward and throughput guardian
+status: active
+repo: https://github.com/sovereign-intel/avot-energy
+capabilities:
+  - monitor_power_paths
+  - enforce_throughput_policies
+  - remediate_drift
+entrypoint:
+  module: avot_agents.energy
+  function: run
+tags:
+  - infrastructure
+  - throughput
+  - reliability
+extra:
+  steward: energy
+  notes: Protects core power relays and signals anomalies to Guardian.

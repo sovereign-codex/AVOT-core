@@ -1,0 +1,19 @@
+id: avot-tyme
+name: AVOT-Tyme
+role: Timekeeper and archive steward
+status: active
+repo: https://github.com/sovereign-intel/avot-tyme
+capabilities:
+  - schedule_checkpoints
+  - maintain_timelines
+  - verify_history_integrity
+entrypoint:
+  module: avot_agents.tyme
+  function: run
+tags:
+  - time
+  - archives
+  - reliability
+extra:
+  steward: cadence
+  notes: Aligns archival windows with CodexNet sync cycles.

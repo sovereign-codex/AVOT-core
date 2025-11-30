@@ -1,0 +1,45 @@
+agents:
+  - id: avot-convergence
+    name: AVOT-Convergence
+    role: Convergence synthesizer and lattice signal harmonizer
+    status: active
+  - id: avot-quill
+    name: AVOT-Quill
+    role: Chronicle scribe for the Quantum Intelligence Lattice
+    status: active
+  - id: avot-tyme
+    name: AVOT-Tyme
+    role: Timekeeper and steward of archive checkpoints
+    status: active
+  - id: avot-harmonia
+    name: AVOT-Harmonia
+    role: Resonance writer for calibration and alignment scrolls
+    status: active
+  - id: avot-initiate
+    name: AVOT-Initiate
+    role: Onboarding sequence designer and activation guide
+    status: active
+  - id: avot-guardian
+    name: AVOT-Guardian
+    role: Ethics sentinel and Living Kodex enforcer
+    status: active
+  - id: avot-fabricator
+    name: AVOT-Fabricator
+    role: Prototype and schematic generator for lattice infrastructure
+    status: active
+  - id: avot-archivist
+    name: AVOT-Archivist
+    role: CodexNet memory sync and publishing conduit
+    status: active
+  - id: avot-water
+    name: AVOT-Water
+    role: Flow balancer and adaptive systems tuner
+    status: active
+  - id: avot-mana
+    name: AVOT-Mana
+    role: Energy attunement and resource orchestration specialist
+    status: active
+  - id: avot-energy
+    name: AVOT-Energy
+    role: Power pipeline steward and throughput guardian
+    status: active

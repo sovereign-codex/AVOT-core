@@ -1,0 +1,153 @@
+{
+  "scrolls": [
+    {
+      "title": "GUARDIAN-ETHICS-RUBRIC",
+      "path": "docs/GUARDIAN-ETHICS-RUBRIC.md",
+      "tags": [
+        "scroll"
+      ],
+      "summary": "Unparsed"
+    },
+    {
+      "title": "GUARDIAN-SCROLL",
+      "path": "docs/GUARDIAN-SCROLL.md",
+      "tags": [
+        "scroll"
+      ],
+      "summary": "Unparsed"
+    },
+    {
+      "title": "GUARDIAN-COHERENCE-RUBRIC",
+      "path": "docs/GUARDIAN-COHERENCE-RUBRIC.md",
+      "tags": [
+        "scroll"
+      ],
+      "summary": "Unparsed"
+    },
+    {
+      "title": "COHERENCE",
+      "path": "docs/COHERENCE.md",
+      "tags": [
+        "scroll"
+      ],
+      "summary": "Unparsed"
+    },
+    {
+      "title": "AVOT-Core",
+      "path": "docs/AVOT-Core.md",
+      "tags": [
+        "scroll"
+      ],
+      "summary": "Unparsed"
+    },
+    {
+      "title": "AGENT_SPEC",
+      "path": "docs/AGENT_SPEC.md",
+      "tags": [
+        "scroll"
+      ],
+      "summary": "Unparsed"
+    },
+    {
+      "title": "SIOS-CORE",
+      "path": "docs/SIOS-CORE.md",
+      "tags": [
+        "scroll"
+      ],
+      "summary": "Unparsed"
+    },
+    {
+      "title": "ARCHIVIST-SCROLL",
+      "path": "docs/ARCHIVIST-SCROLL.md",
+      "tags": [
+        "scroll"
+      ],
+      "summary": "Unparsed"
+    }
+  ],
+  "repo_files": [
+    {
+      "path": "avot_registry.json",
+      "language": "json",
+      "summary": "Unparsed"
+    },
+    {
+      "path": "avot_engine.py",
+      "language": "py",
+      "summary": "Unparsed"
+    },
+    {
+      "path": ".github/workflows/avot-core-ci.yml",
+      "language": "yml",
+      "summary": "Unparsed"
+    },
+    {
+      "path": ".github/workflows/avot-env-check.yml",
+      "language": "yml",
+      "summary": "Unparsed"
+    },
+    {
+      "path": ".github/workflows/archivist-index.yml",
+      "language": "yml",
+      "summary": "Unparsed"
+    },
+    {
+      "path": ".github/workflows/guardian-check.yml",
+      "language": "yml",
+      "summary": "Unparsed"
+    },
+    {
+      "path": "clients/openai_client.py",
+      "language": "py",
+      "summary": "Unparsed"
+    },
+    {
+      "path": "archivist/knowledge_index.json",
+      "language": "json",
+      "summary": "Unparsed"
+    },
+    {
+      "path": "archivist/index_schema.json",
+      "language": "json",
+      "summary": "Unparsed"
+    },
+    {
+      "path": "archivist/indexer.py",
+      "language": "py",
+      "summary": "Unparsed"
+    },
+    {
+      "path": "tests/conftest.py",
+      "language": "py",
+      "summary": "Unparsed"
+    },
+    {
+      "path": "tests/test_guardian_veto.py",
+      "language": "py",
+      "summary": "Unparsed"
+    },
+    {
+      "path": "tests/test_archivist_index.py",
+      "language": "py",
+      "summary": "Unparsed"
+    },
+    {
+      "path": "tests/test_guardian_basic.py",
+      "language": "py",
+      "summary": "Unparsed"
+    }
+  ],
+  "decision_logs": [],
+  "tips": [
+    {
+      "id": "TIP-001-GUARDIAN",
+      "path": "TIPs/TIP-001-GUARDIAN.md",
+      "summary": "Unparsed"
+    },
+    {
+      "id": "TIP-002-ARCHIVIST",
+      "path": "TIPs/TIP-002-ARCHIVIST.md",
+      "summary": "Unparsed"
+    }
+  ]
+}
