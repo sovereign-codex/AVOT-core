@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sovereign-codex.org/schemas/state-capsule.schema.json",
+  "title": "AVOT State Capsule",
+  "description": "A portable, immutable record of an AVOT or Council run. Capsules are designed to be emitted by the engine, stored by an archivist/ledger, and rehydrated for future context without requiring engine-internal state.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "capsule_id",
+    "schema_version",
+    "created_at",
+    "origin",
+    "subject",
+    "input",
+    "result"
+  ],
+  "properties": {
+    "capsule_id": {
+      "type": "string",
+      "description": "Globally unique capsule identifier. Suggested: ulid/uuid."
+    },
+    "schema_version": {
+      "type": "string",
+      "description": "Schema version for this capsule shape (e.g., 0.1.0).",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "created_at": {
+      "type": "string",
+      "description": "ISO-8601 timestamp for capsule creation.",
+      "format": "date-time"
+    },
+
+    "origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "repo", "commit"],
+      "description": "Where the capsule was produced.",
+      "properties": {
+        "engine": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version"],
+          "properties": {
+            "name": { "type": "string", "description": "Engine name (e.g., AVOT-engine-core)." },
+            "version": { "type": "string", "description": "Engine version (semver).", "pattern": "^\\d+\\.\\d+\\.\\d+$" }
+          }
+        },
+        "repo": {
+          "type": "string",
+          "description": "Repository identifier or URL where the engine build came from."
+        },
+        "commit": {
+          "type": "string",
+          "description": "Commit SHA or build identifier."
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Optional runtime metadata (node version, platform, environment)."
+        }
+      }
+    },
+
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id"],
+      "description": "What executed.",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "Execution subject kind.",
+          "enum": ["avot", "council"]
+        },
+        "id": {
+          "type": "string",
+          "description": "AVOT id or Council id."
+        },
+        "version": {
+          "type": "string",
+          "description": "Optional subject version (e.g., 0.1.0).",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "lineage": {
+          "type": "string",
+          "description": "Optional lineage or codex reference."
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Optional tags for indexing."
+        }
+      }
+    },
+
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional session/thread context (Tyme-lab, Archivist, user session).",
+      "properties": {
+        "session_id": { "type": "string" },
+        "thread_id": { "type": "string" },
+        "actor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "display_name": { "type": "string" },
+            "handle": { "type": "string" },
+            "id": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "hash"],
+      "description": "Input provided to the execution subject.",
+      "properties": {
+        "text": { "type": "string", "description": "Original input text/query." },
+        "hash": { "type": "string", "description": "Hash of input for integrity (sha256 recommended)." },
+        "attachments": {
+          "type": "array",
+          "description": "Optional attachment references (not raw binaries).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "ref"],
+            "properties": {
+              "kind": { "type": "string", "description": "Attachment type (file, url, image, doc, etc.)." },
+              "ref": { "type": "string", "description": "Reference pointer (path, URL, id)." },
+              "hash": { "type": "string", "description": "Optional integrity hash for the attachment reference." }
+            }
+          }
+        }
+      }
+    },
+
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approved", "reason", "sources", "output_hash"],
+      "description": "Normalized execution result contract.",
+      "properties": {
+        "approved": { "type": "boolean" },
+        "reason": { "type": "string" },
+        "sources": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Source AVOT ids that contributed to the output."
+        },
+        "output": {
+          "description": "Optional output payload. May be omitted for privacy; output_hash must still be present.",
+          "oneOf": [{ "type": "object" }, { "type": "array" }, { "type": "string" }, { "type": "number" }, { "type": "boolean" }, { "type": "null" }]
+        },
+        "output_hash": {
+          "type": "string",
+          "description": "Hash of output payload (sha256 recommended). Use hash of null if output omitted."
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Optional engine details (merge details, vote stats, trace refs)."
+        }
+      }
+    },
+
+    "ethics": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Ethics-related signals.",
+      "properties": {
+        "flags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of ethics flags raised during execution."
+        },
+        "codices": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Codices applied (e.g., Living Kodex, Garden Flame Codex)."
+        },
+        "posture": {
+          "type": "string",
+          "description": "Optional posture identifier (e.g., argent).",
+          "enum": ["normal", "argent"]
+        }
+      }
+    },
+
+    "coherence": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional coherence snapshot at time of run (CI metrics).",
+      "properties": {
+        "ci": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "C": { "type": "number", "minimum": 0, "maximum": 1 },
+            "S": { "type": "number", "minimum": 0, "maximum": 1 },
+            "Vr": { "type": "number", "minimum": 0, "maximum": 1 },
+            "Ra": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "drift": {
+          "type": "number",
+          "description": "Optional drift score (0..1).",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "signature": {
+          "type": "string",
+          "description": "Optional resonance/coherence signature string for indexing."
+        }
+      }
+    },
+
+    "links": {
+      "type": "array",
+      "description": "Optional links to related artifacts (scrolls, ledgers, commits, docs).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "ref"],
+        "properties": {
+          "kind": { "type": "string", "description": "Link kind (scroll, ledger, commit, doc, url, etc.)." },
+          "ref": { "type": "string", "description": "Pointer/ref (path, url, id)." },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}
