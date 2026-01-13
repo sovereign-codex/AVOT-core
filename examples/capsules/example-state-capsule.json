@@ -1,0 +1,51 @@
+{
+  "capsule_id": "capsule-0001-demo",
+  "schema_version": "0.1.0",
+  "created_at": "2026-01-12T00:00:00Z",
+  "origin": {
+    "engine": { "name": "AVOT-engine-core", "version": "0.1.0" },
+    "repo": "sovereign-codex/AVOT-engine-core",
+    "commit": "DEMO-COMMIT",
+    "runtime": { "node": "20.x", "platform": "demo" }
+  },
+  "subject": {
+    "kind": "council",
+    "id": "sol-tech-quorum-test",
+    "version": "0.1.0",
+    "lineage": "Sovereign Intelligence Codex",
+    "tags": ["sol-tech", "quorum", "test"]
+  },
+  "session": {
+    "session_id": "session-demo-001",
+    "thread_id": "thread-demo-001",
+    "actor": { "display_name": "Shepherd J. Hagan", "handle": "@shepherdjhagan", "id": "shepherd" }
+  },
+  "input": {
+    "text": "Need desalination for brackish water",
+    "hash": "sha256:DEMO_INPUT_HASH"
+  },
+  "result": {
+    "approved": false,
+    "reason": "Quorum not met (1/2)",
+    "sources": ["avot-water-001"],
+    "output": null,
+    "output_hash": "sha256:HASH_OF_NULL",
+    "details": {
+      "vote": { "quorum": 2, "approved_count": 1 }
+    }
+  },
+  "ethics": {
+    "flags": [],
+    "codices": ["Living Kodex", "Garden Flame Codex"],
+    "posture": "normal"
+  },
+  "coherence": {
+    "ci": { "C": 0.92, "S": 1.0, "Vr": 0.7, "Ra": 0.86 },
+    "drift": 0.08,
+    "signature": "coherence.water.resonance"
+  },
+  "links": [
+    { "kind": "scroll", "ref": "examples/councils/sol-tech-quorum-test.council.scroll", "note": "Council definition" },
+    { "kind": "scroll", "ref": "examples/avots/avot-water-001.avot.scroll", "note": "Source AVOT" }
+  ]
+}
