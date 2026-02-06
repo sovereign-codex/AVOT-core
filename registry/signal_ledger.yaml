@@ -1,0 +1,23 @@
+signal_ledger:
+  ledger_id: SIGNAL-LEDGER-001
+  status: active
+  governed_by:
+    - kernel.md
+    - TYME_Charter_of_Emergence
+
+  signals:
+    - signal_id: SIG-2026-001
+      avot_id: AVOT-ARCHIVIST
+      signal_type: scope_refusal
+      timestamp: 2026-01-18T14:32:00Z
+      severity: low
+      description: >
+        Repeated requests to synthesize narrative conclusions
+        beyond archival mandate.
+      context:
+        action_type: communicate
+        lifecycle_state: S3
+      references:
+        - registry/avot_registry.yaml
+      metadata:
+        count: 3
